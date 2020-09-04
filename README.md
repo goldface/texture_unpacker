@@ -21,3 +21,6 @@ Use this script to unpack **.png** sprites from the sprite atlas (providing a **
 *optional*
 
 - Data file format. Valid values are **plist** and **json**. If omitted **plist** format is assumed.
+
+## Fix
+This repository was merged with [onepill/texture_unpacker_script](https://github.com/onepill/texture_unpacker_scirpt)
