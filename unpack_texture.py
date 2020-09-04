@@ -21,6 +21,8 @@ def tree_to_dict(tree):
                 d[item.text] = True
             elif tree[index + 1].tag == 'false':
                 d[item.text] = False
+            elif tree[index + 1].tag == 'integer':
+                d[item.text] = int(tree[index + 1].text);
             elif tree[index + 1].tag == 'dict':
                 d[item.text] = tree_to_dict(tree[index + 1])
     return d
@@ -35,6 +37,7 @@ def get_data_filename(filename, format):
     return data_filename
 
 def frames_from_data(filename, format):
+    print(filename)
     data_filename = get_data_filename(filename, format)
     if format == 'plist':
         root = ElementTree.fromstring(open(data_filename, 'r').read())
@@ -43,6 +46,12 @@ def frames_from_data(filename, format):
         frames = plist_dict['frames'].items()
         for k, v in frames:
             frame = v
+            if(plist_dict["metadata"]["format"] == 3):
+                frame['frame'] = frame['textureRect']
+                frame['rotated'] = frame['textureRotated']
+                frame['sourceSize'] = frame['spriteSourceSize']
+                frame['offset'] = frame['spriteOffset']
+
             rectlist = to_list(frame['frame'])
             width = int(rectlist[3] if frame['rotated'] else rectlist[2])
             height = int(rectlist[2] if frame['rotated'] else rectlist[3])
@@ -160,7 +169,7 @@ def gen_png_from_data(filename, format):
         result_image.paste(rect_on_big, result_box, mask=0)
         if frame['rotated']:
             result_image = result_image.rotate(angle=90, expand=1)
-        result_image.save(outfile)
+        result_image.save(outfile + '.png')
         print(outfile, "generated")
 
 def find_all_file_with_extensions(filepath, ext):
